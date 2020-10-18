@@ -24,13 +24,20 @@ public class LauncherEditor : Editor
         Handles.DrawDottedLine(launcher.transform.position, offsetPosition, 3);
         Handles.Label(offsetPosition, "Offset");
         if (launcher.projectile != null) {
-            var endPosition = offsetPosition + (
-                launcher.transform.forward * launcher.velocity / launcher.projectile.mass
-            );
+            var positions = new List<Vector3>();
+            var velocity = launcher.transform.forward * launcher.velocity / launcher.projectile.mass;
+            var position = offsetPosition;
+            var physicsStep = 0.1f;
+            for (float i = 0f; i <= 1f; i += physicsStep)
+            {
+                positions.Add(position);
+                position += velocity * physicsStep;
+                velocity += Physics.gravity * physicsStep;
+            }
             using(new Handles.DrawingScope(Color.yellow)) {
-                Handles.DrawDottedLine(offsetPosition, endPosition, 1);
-                Gizmos.DrawWireSphere(endPosition, 0.125f);
-                Handles.Label(endPosition, "Estimated Position");
+                Handles.DrawAAPolyLine(positions.ToArray());
+                Gizmos.DrawWireSphere(positions[positions.Count-1], 0.125f);
+                Handles.Label(positions[positions.Count-1], "Estimated Position");
             }
         }
     }
