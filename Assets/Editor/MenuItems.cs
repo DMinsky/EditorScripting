@@ -22,6 +22,12 @@ public class MenuItems : MonoBehaviour
         EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(selected), OpenSceneMode.Additive);
     }
 
+    [MenuItem("Assets/Load Selected Scene Additive", true)]
+    private static bool LoadAdditiveSceneValidation()
+    {
+        return Selection.activeObject != null && Selection.activeObject.GetType() == typeof(SceneAsset);
+    }
+
     [MenuItem("Assets/Create/Custom Configuration")]
     private static void CreateCustomConfiguration()
     {
