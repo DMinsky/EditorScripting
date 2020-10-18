@@ -13,7 +13,7 @@ public class MenuItems : MonoBehaviour
         PlayerPrefs.DeleteAll();
     }
 
-    [MenuItem("Assets/Load Selected Scene Additive")]
+    [MenuItem("Assets/Load Selected Scene Additive", false, 200)]
     private static void LoadAdditiveScene()
     {
         Debug.Log("Load additive");
@@ -35,10 +35,12 @@ public class MenuItems : MonoBehaviour
     }
 
     [MenuItem("CONTEXT/ObjectBuilderScript/Mega Option")]
-    private static void MegaRigidbodyOption()
+    private static void MegaRigidbodyOption(MenuCommand command)
     {
         Debug.Log(Selection.activeObject.name);
-        var go = Selection.activeObject as GameObject;
-        DestroyImmediate(go.GetComponent<ObjectBuilderScript>());
+        // var go = Selection.activeObject as GameObject;
+        // DestroyImmediate(go.GetComponent<ObjectBuilderScript>());
+        ObjectBuilderScript obs = command.context as ObjectBuilderScript;
+        DestroyImmediate(obs);
     }
 }
