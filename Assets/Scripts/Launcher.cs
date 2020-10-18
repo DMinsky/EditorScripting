@@ -18,6 +18,6 @@ public class Launcher : MonoBehaviour
             transform.TransformPoint(offset),
             transform.rotation
         );
-        body.velocity = Vector3.forward * velocity;
+        body.velocity = transform.forward * velocity;
     }
 }

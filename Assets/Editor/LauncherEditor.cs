@@ -17,6 +17,24 @@ public class LauncherEditor : Editor
         
     }
 
+    [DrawGizmo(GizmoType.Selected | GizmoType.Pickable)]
+    static void DrawGizmosSelected(Launcher launcher, GizmoType gizmoType)
+    {
+        var offsetPosition = launcher.transform.TransformPoint(launcher.offset);
+        Handles.DrawDottedLine(launcher.transform.position, offsetPosition, 3);
+        Handles.Label(offsetPosition, "Offset");
+        if (launcher.projectile != null) {
+            var endPosition = offsetPosition + (
+                launcher.transform.forward * launcher.velocity / launcher.projectile.mass
+            );
+            using(new Handles.DrawingScope(Color.yellow)) {
+                Handles.DrawDottedLine(offsetPosition, endPosition, 1);
+                Gizmos.DrawWireSphere(endPosition, 0.125f);
+                Handles.Label(endPosition, "Estimated Position");
+            }
+        }
+    }
+
     void OnSceneGUI()
     {
         var launcher = target as Launcher;
@@ -31,7 +49,7 @@ public class LauncherEditor : Editor
         Handles.BeginGUI();
 
         screenPos = Camera.current.WorldToScreenPoint(
-            launcher.transform.position + launcher.offset
+            launcher.transform.TransformPoint(launcher.offset)
         );
         // 2 from retina screen?
         // SceneView.currentDrawingSceneView.position includes window header
