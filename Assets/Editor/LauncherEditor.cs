@@ -9,13 +9,13 @@ public class LauncherEditor : Editor
     private Vector3 screenPos;
     private Rect rectResult;
 
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-        EditorGUILayout.Vector3Field("Pos", screenPos);
-        EditorGUILayout.RectField("Result", rectResult);
+    // public override void OnInspectorGUI()
+    // {
+    //     DrawDefaultInspector();
+    //     EditorGUILayout.Vector3Field("Pos", screenPos);
+    //     EditorGUILayout.RectField("Result", rectResult);
         
-    }
+    // }
 
     [DrawGizmo(GizmoType.Selected | GizmoType.Pickable)]
     static void DrawGizmosSelected(Launcher launcher, GizmoType gizmoType)
@@ -39,12 +39,29 @@ public class LauncherEditor : Editor
     {
         var launcher = target as Launcher;
         var transform = launcher.transform;
-        launcher.offset = transform.InverseTransformPoint(
-            Handles.PositionHandle(
-                transform.TransformPoint(launcher.offset),
-                transform.rotation
-            )
-        );
+
+        using (var cc = new EditorGUI.ChangeCheckScope())
+        {
+            var newOffset = transform.InverseTransformPoint(
+                Handles.PositionHandle(
+                    transform.TransformPoint(launcher.offset),
+                    transform.rotation
+                )
+            );
+            if (cc.changed)
+            {
+                Undo.RecordObject(launcher, "Offset Change");
+                launcher.offset = newOffset;
+            }
+        }
+
+
+        // launcher.offset = transform.InverseTransformPoint(
+        //     Handles.PositionHandle(
+        //         transform.TransformPoint(launcher.offset),
+        //         transform.rotation
+        //     )
+        // );
 
         Handles.BeginGUI();
 
